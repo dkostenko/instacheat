@@ -73,20 +73,102 @@ class FollowersController < ApplicationController
     end
   end
 
-  # DELETE /followers/1
-  # DELETE /followers/1.json
+  # DELETE /followers/1.js
   def destroy
     @follower = Follower.find(params[:id])
+    Instagram.unfollow_user(@follower.i_id, access_token: session[:access_token])
     @follower.destroy
 
     respond_to do |format|
-      format.html { redirect_to followers_url }
-      format.json { head :no_content }
+      format.js
     end
   end
   
   
   def actualize
+    users = Instagram.user_follows(session[:i_id], access_token: session[:access_token], count: 2000)
     
+    users.each do |user|
+      @follower = Follower.find_by_i_id(user.id)
+      if @follower
+        @follower.followto = true
+        @follower.save
+      else
+        Follower.create(:followme => false, :followto => true, :i_id => user.id)
+      end
+    end
+    
+    users = Instagram.user_followed_by(session[:i_id], access_token: session[:access_token], count: 2000)
+    
+    users.each do |user|
+      @follower = Follower.find_by_i_id(user.id)
+      if @follower
+        @follower.followme = true
+        @follower.save
+      else
+        Follower.create(:followto => false, :followme => true, :i_id => user.id)
+      end
+    end
+    
+    redirect_to :controller => 'followers', :action => 'index'
   end
+  
+  
+  
+  def remove_excess_followto  
+    @excess_followers = Follower.where("followto = ? AND followme = ?", true, false)
+    
+    respond_to do |format|
+      format.js
+    end
+  end
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  def test
+    client = Instagram.client
+    @tag = 'cats'
+    @tagged_media = client.tag_recent_media(@tag, count: 1)
+    
+    for i in 1..30
+      @max_tag_id = @tagged_media.pagination.next_max_tag_id
+      @tagged_media +=  client.tag_recent_media(@tag, count: 1, max_id: @max_tag_id)
+    end
+    
+
+
+    
+    respond_to do |format|
+      format.html
+    end
+  end
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 end

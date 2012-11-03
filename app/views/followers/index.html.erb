@@ -1,4 +1,5 @@
 <h1>Listing followers</h1>
+<%= @followers.size %>
 
 <table>
   <tr>
@@ -26,3 +27,5 @@
 
 <%= link_to 'New Follower', new_follower_path %>
 <%= link_to "Актуализировать базу", actualize_followers_path, :class => 'btn' %>
+<hr />
+<%= link_to "Лишние", remove_excess_followto_followers_path, :class => 'btn', :remote => true %>

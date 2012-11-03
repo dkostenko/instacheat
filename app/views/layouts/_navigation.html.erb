@@ -1,4 +1,8 @@
 <% if !session[:access_token].nil? %>
+<ul class="nav">
+	<li <%= "class='active'" if params[:controller] == 'followers' %>><%= link_to "Подписчики", followers_path %></li>
+	<li <%= "class='active'" if params[:controller] == 'users' %>><%= link_to "Пользователи", users_path %></li>
+</ul>
 <ul class="nav pull-right">
 	<li>
 		<%= link_to "logout", logout_path %>

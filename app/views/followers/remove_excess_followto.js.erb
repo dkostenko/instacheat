@@ -1,0 +1,25 @@
+<% count = 0 %>
+<% @excess_followers.each do |user| %>
+		setTimeout(function() {
+		sendTag("<%= user.id %>");
+		}, <%= count*3000 %>);
+		<% count += 1 %>
+<% end %>
+
+
+
+function sendTag(user_id){
+	var data = new Object();
+	data['id'] = user_id;
+	sendData(data, "DELETE", "/followers/"+data['id']);
+}
+
+
+function sendData(data, type, url){
+	data['format'] = 'js';
+	$.ajax({
+		type: type,
+		url: url,
+		data: data
+	});
+}

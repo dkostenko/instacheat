@@ -10,7 +10,7 @@ class SessionsController < ApplicationController
     @user = User.find_by_i_id(response.user.id)
     session[:access_token] = response.access_token
     if @user
-      session[:i_id] = @user.id
+      session[:i_id] = @user.i_id
     else
       session[:i_id] = response.user.id 
       @user = User.create(:i_id => response.user.id, :i_name => response.user.username, :profile_picture => response.user.profile_picture)

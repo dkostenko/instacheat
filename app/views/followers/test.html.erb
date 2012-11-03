@@ -1,0 +1,9 @@
+<% @tagged_media['data'].each do |media| %>
+<img src="<%= media.images.thumbnail.url%>">
+<p>Likes: <%= media.likes['count'] %></p>
+<p>Comments: <%= media.comments['count'] %></p>
+<% end %>
+
+
+<hr /><hr /><hr /><hr /><hr /><hr /><hr /><hr /><hr /><hr /><hr /><hr />
+

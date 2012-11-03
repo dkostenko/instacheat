@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  i_id: 1
+  followto: false
+  followme: false
+
+two:
+  i_id: 1
+  followto: false
+  followme: false

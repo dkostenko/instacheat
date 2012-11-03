@@ -1,0 +1,23 @@
+//
+// Grid system
+// --------------------------------------------------
+
+
+// Fixed
+.row 
+  margin-left: $gridGutterWidth * -1
+  @include clearfix
+
+[class*="span"]
+  float: left
+  min-height: 1px // prevent collapsing columns
+  margin-left: $gridGutterWidth
+
+// Set the container width, and override it for fixed navbars in media queries
+.container,
+.navbar-static-top .container,
+.navbar-fixed-top .container,
+.navbar-fixed-bottom .container
+  width: ($gridColumnWidth * $gridColumns) + ($gridGutterWidth * ($gridColumns - 1))
+
+@include grid-core

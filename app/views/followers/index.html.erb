@@ -1,0 +1,28 @@
+<h1>Listing followers</h1>
+
+<table>
+  <tr>
+    <th>I</th>
+    <th>Followto</th>
+    <th>Followme</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @followers.each do |follower| %>
+  <tr>
+    <td><%= follower.i_id %></td>
+    <td><%= follower.followto %></td>
+    <td><%= follower.followme %></td>
+    <td><%= link_to 'Show', follower %></td>
+    <td><%= link_to 'Edit', edit_follower_path(follower) %></td>
+    <td><%= link_to 'Destroy', follower, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Follower', new_follower_path %>
+<%= link_to "Актуализировать базу", actualize_followers_path, :class => 'btn' %>

@@ -1,0 +1,7 @@
+<% if !session[:access_token].nil? %>
+<ul class="nav pull-right">
+	<li>
+		<%= link_to "logout", logout_path %>
+	</li>
+</ul>
+<% end %>

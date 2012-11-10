@@ -1,0 +1,32 @@
+<% count = 0 %>
+<% @user_recent_media.each do |media| %>
+	<% if [0, 1, 2].sample == 0 %>
+		setTimeout(function() {
+			doLike("<%= media.id %>");
+		}, <%= count*5000 %> + Math.random() * 1000);
+		<% count += 1 %>
+	<% end %>
+<% end %>
+
+setTimeout(function() {
+	var data = new Object();
+	data['user_id'] = <%= @random_follower %>;
+	sendData(data, "GET", "<%= like_recent_follower_path(@random_follower) %>" );
+}, <%= count*7000 %>);
+
+
+function doLike(media_id){
+	var data = new Object();
+	data['id'] = media_id;
+	sendData(data, "GET", "/followers/" + data['id'] + "/dolike" );
+}
+
+
+function sendData(data, type, url){
+	data['format'] = 'js';
+	$.ajax({
+		type: type,
+		url: url,
+		data: data
+	});
+}

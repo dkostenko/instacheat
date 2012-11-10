@@ -9,6 +9,8 @@ class FollowersController < ApplicationController
     @followme = Follower.find(:all, :conditions => ["followme=?", true])
     @followto = Follower.find(:all, :conditions => ["followto=?", true])
     
+    @random_follower = @followto.sample(1).first.i_id
+    
     @user_id = session[:i_id]
     @token = session[:access_token]
 
@@ -121,11 +123,26 @@ class FollowersController < ApplicationController
     end
   end
   
+  def like_recent
+    followto = Follower.find(:all, :conditions => ["followto=?", true])
+    @random_follower = followto.sample(1).first.i_id
+    
+    @user_recent_media = Instagram.user_recent_media(params[:id], :access_token => session[:access_token]).data
+    
+    
+    respond_to do |format|
+      format.js
+    end
+  end
   
   
-  
-  
-  
+  def dolike
+    Instagram.like_media(params[:id], :access_token => session[:access_token])
+    
+    respond_to do |format|
+      format.js { render :nothing => true }
+    end
+  end
   
   
   

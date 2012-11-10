@@ -2,7 +2,7 @@
 <% @excess_followers.each do |user| %>
 		setTimeout(function() {
 		sendTag("<%= user.id %>");
-		}, <%= count*1500 %>);
+		}, <%= count*7000 %>);
 		<% count += 1 %>
 <% end %>
 

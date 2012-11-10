@@ -7,6 +7,8 @@ Instacheat::Application.routes.draw do
     end
     
     member do
+      get 'dolike'
+      get 'like_recent'
       post 'add_followme'
       post 'add_followto'
     end

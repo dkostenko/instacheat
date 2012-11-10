@@ -1,6 +1,9 @@
 <h1>Listing followers</h1>
 <p>followme = <%= @followme.size %></p>
-<p>followto = <%= @followto.size %> <%= link_to "поставить лайки", "#", :class => 'btn', :id => "like_recent" %></p>
+<p>
+	followto = <%= @followto.size %>
+	<%= link_to "поставить лайки", like_recent_follower_path(@random_follower), :class => 'btn', :remote => true %>
+</p>
 
 
 

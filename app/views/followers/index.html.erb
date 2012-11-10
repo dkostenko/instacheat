@@ -1,31 +1,94 @@
 <h1>Listing followers</h1>
-<%= @followers.size %>
+<p>followme = <%= @followme.size %></p>
+<p>followto = <%= @followto.size %> <%= link_to "поставить лайки", "#", :class => 'btn', :id => "like_recent" %></p>
 
-<table>
-  <tr>
-    <th>I</th>
-    <th>Followto</th>
-    <th>Followme</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
 
-<% @followers.each do |follower| %>
-  <tr>
-    <td><%= follower.i_id %></td>
-    <td><%= follower.followto %></td>
-    <td><%= follower.followme %></td>
-    <td><%= link_to 'Show', follower %></td>
-    <td><%= link_to 'Edit', edit_follower_path(follower) %></td>
-    <td><%= link_to 'Destroy', follower, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-  </tr>
-<% end %>
-</table>
+
 
 <br />
 
-<%= link_to 'New Follower', new_follower_path %>
-<%= link_to "Актуализировать базу", actualize_followers_path, :class => 'btn' %>
+<%= link_to "Актуализировать followto", '#', :class => 'btn', :id => 'actualize_followto' %>
+<%= link_to "Актуализировать followme", '#', :class => 'btn', :id => 'actualize_followme' %>
 <hr />
 <%= link_to "Лишние", remove_excess_followto_followers_path, :class => 'btn', :remote => true %>
+
+
+
+<% content_for :custom_js_bottom do %>
+<script>
+
+$('a#actualize_followto').click(function(){
+	actualize_followto('https://api.instagram.com/v1/users/<%= @user_id %>/follows?access_token=<%= @token %>&count=100', 0);
+	return false;	
+});
+
+
+function actualize_followto(next_url, count) {
+	$.ajax({
+		method: "GET",
+		url: next_url,
+		dataType: "jsonp",
+		jsonp: "callback",
+		jsonpCallback: "jsonpcallback",
+		success: function(data){
+			$.each(data.data, function(i, item){
+				var data = new Object();
+				sendData(data, "POST", "/followers/" + item.id + "/add_followto");
+			});
+			if(data.pagination.next_url && count <= 500){
+				actualize_followto(data.pagination.next_url, ++count);
+			}
+		},
+		error: function(jqXHR, textStatus, errorThrown){
+			alert('error!!');
+		}
+	});
+}
+
+
+$('a#actualize_followme').click(function(){
+	actualize_followme('https://api.instagram.com/v1/users/<%= @user_id %>/followed-by?access_token=<%= @token %>&count=100', 0);
+	return false;	
+});
+
+
+function actualize_followme(next_url, count) {
+	$.ajax({
+		method: "GET",
+		url: next_url,
+		dataType: "jsonp",
+		jsonp: "callback",
+		jsonpCallback: "jsonpcallback",
+		success: function(data){
+			$.each(data.data, function(i, item){
+				var data = new Object();
+				sendData(data, "POST", "/followers/" + item.id + "/add_followme");
+			});
+			if(data.pagination.next_url && count <= 500){
+				actualize_followme(data.pagination.next_url, ++count);
+			}
+		},
+		error: function(jqXHR, textStatus, errorThrown){
+			alert('error!!');
+		}
+	});
+}
+
+
+function sendData(data, type, url){
+	data['format'] = 'js';
+	$.ajax({
+		type: type,
+		url: url,
+		data: data
+	});
+}
+
+
+
+
+
+
+
+</script>
+<% end %>

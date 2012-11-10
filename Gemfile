@@ -6,7 +6,7 @@ gem 'rails', '3.2.6'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'sqlite3'
-gem 'instagram'
+gem 'instagram', :git => 'https://github.com/dkostenko/instagram-ruby-gem.git'
 
 
 # Gems used only for assets and not required

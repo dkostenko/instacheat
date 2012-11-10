@@ -6,11 +6,14 @@ class FollowersController < ApplicationController
   # GET /followers
   # GET /followers.json
   def index
-    @followers = Follower.all
+    @followme = Follower.find(:all, :conditions => ["followme=?", true])
+    @followto = Follower.find(:all, :conditions => ["followto=?", true])
+    
+    @user_id = session[:i_id]
+    @token = session[:access_token]
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render json: @followers }
     end
   end
 
@@ -49,10 +52,8 @@ class FollowersController < ApplicationController
     respond_to do |format|
       if @follower.save
         format.html { redirect_to @follower, notice: 'Follower was successfully created.' }
-        format.json { render json: @follower, status: :created, location: @follower }
       else
         format.html { render action: "new" }
-        format.json { render json: @follower.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -65,10 +66,8 @@ class FollowersController < ApplicationController
     respond_to do |format|
       if @follower.update_attributes(params[:follower])
         format.html { redirect_to @follower, notice: 'Follower was successfully updated.' }
-        format.json { head :no_content }
       else
         format.html { render action: "edit" }
-        format.json { render json: @follower.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -85,34 +84,33 @@ class FollowersController < ApplicationController
   end
   
   
-  def actualize
-    users = Instagram.user_follows(session[:i_id], access_token: session[:access_token], count: 2000)
-    
-    users.each do |user|
-      @follower = Follower.find_by_i_id(user.id)
-      if @follower
-        @follower.followto = true
-        @follower.save
-      else
-        Follower.create(:followme => false, :followto => true, :i_id => user.id)
-      end
+  def add_followme
+    @follower = Follower.find_by_i_id(params[:id])
+    if @follower
+      @follower.followme = true
+      @follower.save
+    else
+      Follower.create(:followto => false, :followme => true, :i_id => params[:id])
     end
     
-    users = Instagram.user_followed_by(session[:i_id], access_token: session[:access_token], count: 2000)
-    
-    users.each do |user|
-      @follower = Follower.find_by_i_id(user.id)
-      if @follower
-        @follower.followme = true
-        @follower.save
-      else
-        Follower.create(:followto => false, :followme => true, :i_id => user.id)
-      end
+    respond_to do |format|
+      format.js { render :nothing => true }
     end
-    
-    redirect_to :controller => 'followers', :action => 'index'
   end
   
+  def add_followto
+    @follower = Follower.find_by_i_id(params[:id])
+    if @follower
+      @follower.followto = true
+      @follower.save
+    else
+      Follower.create(:followme => false, :followto => true, :i_id => params[:id])
+    end
+    
+    respond_to do |format|
+      format.js { render :nothing => true }
+    end
+  end
   
   
   def remove_excess_followto  

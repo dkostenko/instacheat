@@ -2,9 +2,13 @@ Instacheat::Application.routes.draw do
 
   resources :followers do
     collection do
-      get 'actualize'
       get 'remove_excess_followto'
       get 'test'
+    end
+    
+    member do
+      post 'add_followme'
+      post 'add_followto'
     end
   end
 
